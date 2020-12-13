@@ -1,18 +1,27 @@
-import refs from "./refs.js";
-
-class Weather {
-  constructor() {
-    //
+export default class Weather {
+  constructor(objRefs) {
+    this.objRefs = objRefs;
   }
+
   getFetch(cityName) {
-    let apiKey = "0b4df61cc05b8d4b2f39b16f2d4612df";
-    const { inputSearchBar, weather, city, temp, flex, humidity, wind } = refs;
+    let apiKey = "aba336b92b728d858c54328906559444";
+    const {
+      inputSearchBar,
+      weather,
+      city,
+      temp,
+      flex,
+      humidity,
+      wind,
+    } = this.objRefs;
+
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
     flex.innerHTML = "";
     inputSearchBar.value = "";
+
     let result = fetch(url)
       .then((response) => {
-        if (!response.ok) return alert("Некорректное название");
+        if (!response.ok) return alert("Введите коректный город");
         return response.json();
       })
       .then((data) => {
@@ -21,9 +30,9 @@ class Weather {
         city.textContent = `Weather in ${data.name}`;
         let celc = Math.round(data.main.temp - 273.15);
         temp.textContent = `${celc}°C`;
+
         const iconData = data.weather.map((el) => {
           const img = document.createElement("img");
-
           img.src = `https://openweathermap.org/img/wn/${el.icon}.png`;
           img.alt = el.description;
           img.classList.add("icon");
@@ -39,9 +48,8 @@ class Weather {
         wind.textContent = `Wind speed: ${data.wind.speed} km/h`;
       })
       .catch((error) => {
-        console.error(`Опа-па, что-то ты начудил!`, error);
+        console.error(`Опа-па, что-то ты начудил`, error);
       });
-
     return result;
   }
 }
